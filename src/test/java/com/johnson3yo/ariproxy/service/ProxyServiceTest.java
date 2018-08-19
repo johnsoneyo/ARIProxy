@@ -6,7 +6,7 @@
 package com.johnson3yo.ariproxy.service;
 
 import ch.loway.oss.ari4java.tools.ARIException;
-import com.johnson3yo.ariproxy.controller.Payload;
+import com.johnson3yo.ariproxy.dto.PayloadDTO;
 import java.net.URISyntaxException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,7 +27,7 @@ public class ProxyServiceTest {
     
     @Test
     public  void testOriginate() throws ARIException, URISyntaxException{
-        service.originate(new Payload());
+        service.originate(new PayloadDTO());
     }
     
 }

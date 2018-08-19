@@ -3,13 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.johnson3yo.ariproxy.controller;
+package com.johnson3yo.ariproxy.dto;
 
 /**
  *
  * @author johnson3yo
  */
-public class Payload {
+public class PayloadDTO {
     
     private String endpoint;
     private String variables;
@@ -22,7 +22,7 @@ public class Payload {
     private Integer timeout;
     
 
-    public Payload() {
+    public PayloadDTO() {
     }
     
     public String getEndpoint() {
