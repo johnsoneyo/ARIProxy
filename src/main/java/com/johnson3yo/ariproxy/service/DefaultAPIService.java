@@ -207,7 +207,7 @@ public class DefaultAPIService implements ARIService<Channel> {
             for (EndpointResponse er : readValue) {
                 EndpointResponse.CurrentChannel cc = new EndpointResponse().new CurrentChannel();
                 cc.setId(Arrays.asList(er.getChannelIds()).isEmpty() ? null : er.getChannelIds()[0]);
-                cc.setName(Arrays.asList(er.getChannelIds()).isEmpty()? null : "demo");
+                cc.setName(Arrays.asList(er.getChannelIds()).isEmpty() ? null : "demo");
                 er.setCurrentChannel(cc);
             }
         } catch (IOException ex) {
@@ -236,7 +236,6 @@ public class DefaultAPIService implements ARIService<Channel> {
 
     @Override
     public void playMoh(String bridgeId) {
-        ///bridges/{bridgeId}/moh
         HttpEntity entity = new HttpEntity(headers);
         ResponseEntity<String> exchange = restTemplate.
                 exchange(baseURL.

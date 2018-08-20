@@ -5,12 +5,13 @@
  */
 package com.johnson3yo.ariproxy.repository;
 
+import com.johnson3yo.ariproxy.datao.CallLog;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
  *
  * @author johnson3yo
  */
-public interface CallLogRepository extends JpaRepository{
+public interface CallLogRepository extends JpaRepository<CallLog,Integer>{
     
 }
