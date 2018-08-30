@@ -22,7 +22,7 @@ public class BridgeResponse {
     private String bridgeClass;
     private String creator;
     private String name;
-    private String[] channels;
+    private List<String> channels;
     @JsonProperty(value = "video_mode")
     private String videoMode;
     private List<Node> nodes;
@@ -78,11 +78,11 @@ public class BridgeResponse {
         this.name = name;
     }
 
-    public String[] getChannels() {
+    public List<String> getChannels() {
         return channels;
     }
 
-    public void setChannels(String[] channels) {
+    public void setChannels(List<String> channels) {
         this.channels = channels;
     }
 
@@ -105,8 +105,16 @@ public class BridgeResponse {
 
     public static class Node {
 
-        public Node() {
+        public Node(String id, String name) {
+            this.id = id;
+            this.name = name;
         }
+
+        public Node() {
+        }     
+               
+        private String id;
+        private String name;
     
         private List<Children> children;
 
@@ -117,6 +125,24 @@ public class BridgeResponse {
         public void setChildren(List<Children> children) {
             this.children = children;
         }
+
+        public String getId() {
+            return id;
+        }
+
+        public void setId(String id) {
+            this.id = id;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+        
+        
         
         public static class Children {
 

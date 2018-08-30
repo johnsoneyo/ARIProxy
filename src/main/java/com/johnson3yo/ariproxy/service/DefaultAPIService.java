@@ -8,6 +8,7 @@ package com.johnson3yo.ariproxy.service;
 import ch.loway.oss.ari4java.tools.RestException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.johnson3yo.ariproxy.datao.CallLog;
 import com.johnson3yo.ariproxy.dto.BridgeDTO;
 import com.johnson3yo.ariproxy.dto.BridgeEagerLoaded;
 import com.johnson3yo.ariproxy.dto.BridgeResponse;
@@ -15,6 +16,7 @@ import com.johnson3yo.ariproxy.dto.Channel;
 import com.johnson3yo.ariproxy.dto.EndpointResponse;
 import com.johnson3yo.ariproxy.dto.PayloadDTO;
 import com.johnson3yo.ariproxy.dto.PlaybackResponse;
+import com.johnson3yo.ariproxy.repository.CallLogRepository;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -28,6 +30,7 @@ import javax.annotation.PostConstruct;
 import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -53,8 +56,15 @@ public class DefaultAPIService implements ARIService<Channel> {
     private String password;
     @Value("${base.url}")
     private String baseURL;
+    @Value("${media.stream.synthesize.stream}")
+    private String media;
+    @Autowired
+    private CallLogRepository callRepo;
 
     private static HttpHeaders headers;
+
+    @Autowired
+    private GoogleService gservice;
 
     @PostConstruct
     public void geAuthHeaders() {
@@ -116,20 +126,19 @@ public class DefaultAPIService implements ARIService<Channel> {
             List<BridgeResponse.Node> nodes = new ArrayList();
 
             for (BridgeResponse br : readValue) {
-                BridgeResponse.Node node = new BridgeResponse.Node();
+                BridgeResponse.Node node = new BridgeResponse.Node("0803", "participants");
                 List<BridgeResponse.Node.Children> children = new ArrayList();
                 for (String id : br.getChannels()) {
                     BridgeResponse.Node.Children child = new BridgeResponse.Node.Children();
                     child.setId(id);
                     child.setName("demo".concat(id));
                     children.add(child);
+                    node.setChildren(children);
                 }
-                node.setChildren(children);
                 nodes.add(node);
                 br.setNodes(nodes);
             }
             return readValue;
-
         } catch (IOException ex) {
             Logger.getLogger(DefaultAPIService.class.getName()).log(Level.SEVERE, null, ex);
             return readValue;
@@ -311,6 +320,35 @@ public class DefaultAPIService implements ARIService<Channel> {
     @Override
     public BridgeEagerLoaded getBridgeDetails() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public PlaybackResponse playMediaInBridge(String bridgeId, String mediaText) {
+        String mediaURL = "sound:/home/johnson3yo/Downloads/beethoven-30sec";
+
+        try {
+            HttpEntity entity = new HttpEntity(headers);
+            ResponseEntity<String> exchange = restTemplate.
+                    exchange(baseURL.
+                            concat("/bridges/{bridgeId}/play?media={mediaURL}"),
+                            HttpMethod.POST, entity, String.class, bridgeId, mediaURL);
+            ObjectMapper mapper = new ObjectMapper();
+            return mapper.readValue(exchange.getBody(), PlaybackResponse.class);
+        } catch (IOException ex) {
+            Logger.getLogger(DefaultAPIService.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return null;
+    }
+
+    @Override
+    public CallLog saveCall(CallLog call) {
+        return callRepo.save(call);
+    }
+
+    @Override
+    public List<CallLog> getCalls(Integer pageNo,Integer limit) {
+        return callRepo.findAll(PageRequest.of(pageNo, limit));
     }
 
 }

@@ -13,9 +13,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.List;
 import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -30,11 +30,14 @@ import org.springframework.web.client.RestTemplate;
 @Service
 public class GoogleService extends GoogleHttpHeaders {
 
-    private final String baseURL = "";
+    @Value("${media.stream.synthesize}")
+    private  String synthesize;
 
     @Autowired
     private RestTemplate restTemplate;
     private String s;
+    @Value("${sound.output.dir}")
+    private String soundOutputDIR;
 
     @PostConstruct
     public void geAuthHeaders() throws IOException {
@@ -62,17 +65,17 @@ public class GoogleService extends GoogleHttpHeaders {
 
         HttpEntity request = new HttpEntity(google, getHeaders());
         ResponseEntity<String> exchange = restTemplate.
-                exchange("https://texttospeech.googleapis.com/v1beta1/text:synthesize",
+                exchange(synthesize,
                         HttpMethod.POST, request, String.class);
         ObjectMapper mapper = new ObjectMapper();
         response = mapper.readValue(exchange.getBody(), AudioResponse.class);
 
-        BufferedWriter writer = new BufferedWriter(new FileWriter("sound.txt"));
+        BufferedWriter writer = new BufferedWriter(new FileWriter(soundOutputDIR+"sound.txt"));
         writer.write(response.getAudioContent());
         writer.close();
-        Process p = Runtime.getRuntime().exec(new String[]{"bash", "-c", "base64 sound.txt --decode > /home/johnson3yo/sounds/sound.mp3"});
+        Process p = Runtime.getRuntime().exec(new String[]{"bash", "-c", "base64 "+soundOutputDIR+"sound.txt --decode > "+soundOutputDIR+"sound.mp3"});
         p.waitFor();
-        File file = new File("/home/johnson3yo/sounds/sound.mp3");
+        File file = new File(soundOutputDIR+"sound.mp3");
         InputStreamResource resource = new InputStreamResource(new FileInputStream(file));
 
         return new Object[]{resource, file};

@@ -9,12 +9,14 @@ import com.johnson3yo.ariproxy.dto.Voices;
 import com.johnson3yo.ariproxy.service.GoogleService;
 import java.io.File;
 import java.io.IOException;
+import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -48,6 +50,14 @@ public class GoogleVoiceSynthesizerController {
                 .headers(headers)
                 .contentType(MediaType.parseMediaType("application/octet-stream"))
                 .body(resource);
+    }
+
+    @GetMapping("stream")
+    public void googleTTSStream(@RequestParam("text") String text,HttpServletResponse resp) throws IOException, InterruptedException {
+        Object[] response = service.googleTTS(text);
+        InputStreamResource resource = (InputStreamResource) response[0];
+        resp.setContentType("audio/mpeg");
+        StreamUtils.copy(resource.getInputStream(), resp.getOutputStream());
     }
 
     @GetMapping("voices")

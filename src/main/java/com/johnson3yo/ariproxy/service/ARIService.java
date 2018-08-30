@@ -6,6 +6,7 @@
 package com.johnson3yo.ariproxy.service;
 
 import ch.loway.oss.ari4java.tools.RestException;
+import com.johnson3yo.ariproxy.datao.CallLog;
 import com.johnson3yo.ariproxy.dto.BridgeDTO;
 import com.johnson3yo.ariproxy.dto.BridgeEagerLoaded;
 import com.johnson3yo.ariproxy.dto.BridgeResponse;
@@ -50,5 +51,11 @@ public interface ARIService<T> {
     void ringChannel(String channelId);
 
     BridgeEagerLoaded getBridgeDetails();
+    
+    PlaybackResponse playMediaInBridge(String bridgeId,String mediaText);
+
+    CallLog saveCall(CallLog call);
+
+    List<CallLog> getCalls(Integer pageNo,Integer limit);
 
 }

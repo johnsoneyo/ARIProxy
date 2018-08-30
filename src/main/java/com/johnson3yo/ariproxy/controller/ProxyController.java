@@ -7,6 +7,7 @@ package com.johnson3yo.ariproxy.controller;
 
 import com.johnson3yo.ariproxy.dto.PayloadDTO;
 import ch.loway.oss.ari4java.tools.RestException;
+import com.johnson3yo.ariproxy.datao.CallLog;
 import com.johnson3yo.ariproxy.dto.BridgeDTO;
 import com.johnson3yo.ariproxy.dto.BridgeResponse;
 import com.johnson3yo.ariproxy.dto.Channel;
@@ -129,6 +130,28 @@ public class ProxyController {
         PlaybackResponse pb = service.startMediaPlayback(bridgeId, playbackId);
         return new ResponseEntity<PlaybackResponse>(pb, HttpStatus.NO_CONTENT);
 
+    }
+
+    @GetMapping("bridges/{bridgeId}/playmedia")
+    public ResponseEntity playMediaInBridge(@PathVariable("bridgeId") String bridgeId,
+            @RequestParam(value = "text", required = false) String text) {
+        PlaybackResponse pb = service.playMediaInBridge(bridgeId, text);
+        return new ResponseEntity<PlaybackResponse>(pb, HttpStatus.NO_CONTENT);
+
+    }
+
+    @PostMapping("calls")
+    public ResponseEntity saveCall(@RequestBody CallLog call) {
+        CallLog calllog = service.saveCall(call);
+        return new ResponseEntity<CallLog>(calllog, HttpStatus.CREATED);
+    }
+
+    @GetMapping("calls/{pageNo}")
+    public ResponseEntity getCalls(
+            @PathVariable("pageNo") Integer pageNo,
+            @RequestParam(value = "limit", required = false, defaultValue = "100") Integer limit) {
+        List<CallLog> logs = service.getCalls(pageNo, limit);
+        return new ResponseEntity<List<CallLog>>(logs, HttpStatus.OK);
     }
 
 }

@@ -5,12 +5,21 @@
  */
 package com.johnson3yo.ariproxy.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  *
  * @author johnson3yo
  */
 public class PlaybackResponse {
+
     private String id;
+    private String language;
+    @JsonProperty(value = "media_uri")
+    private String mediaURI;
+    private String state;
+    @JsonProperty(value = "target_uri")
+    private String targetURI;
 
     public PlaybackResponse() {
     }
@@ -22,6 +31,39 @@ public class PlaybackResponse {
     public void setId(String id) {
         this.id = id;
     }
+
+    public String getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(String language) {
+        this.language = language;
+    }
+
+    public String getMediaURI() {
+        return mediaURI;
+    }
+
+    public void setMediaURI(String mediaURI) {
+        this.mediaURI = mediaURI;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public String getTargetURI() {
+        return targetURI;
+    }
+
+    public void setTargetURI(String targetURI) {
+        this.targetURI = targetURI;
+    }
+
     
-    
+
 }
