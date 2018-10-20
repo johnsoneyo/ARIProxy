@@ -22,7 +22,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
  */
 @Configuration
 @EnableSwagger2
-public class Configs {
+public class Config {
 
     @Bean
     public RestTemplate restTemplate(RestTemplateBuilder builder) {
