@@ -5,6 +5,7 @@
  */
 package com.johnson3yo.ariproxy.datao;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Basic;
@@ -13,11 +14,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.validation.constraints.Size;
 
 /**
@@ -26,8 +24,6 @@ import javax.validation.constraints.Size;
  */
 @Entity
 @Table(name = "call_log")
-@NamedQueries({
-    @NamedQuery(name = "CallLog.findAll", query = "SELECT c FROM CallLog c")})
 public class CallLog implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -36,20 +32,29 @@ public class CallLog implements Serializable {
     @Basic(optional = false)
     @Column(name = "id")
     private Integer id;
-    @Column(name = "created_time")
-    @Temporal(TemporalType.DATE)
-    private Date createdTime;
-    @Size(max = 16)
-    @Column(name = "caller_id")
-    private String callerId;
-    @Size(max = 16)
     @Column(name = "source")
     private String source;
     @Size(max = 16)
     @Column(name = "destination")
     private String destination;
-    @Column(name = "duration")
-    private Integer duration;
+    @Size(max = 64)
+    @Column(name = "source_channel_id")
+    private String sourceChannelId;
+    @Size(max = 64)
+    @Column(name = "destination_channel_id")
+    private String destinationChannelId;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "hh:mm:ss")
+    @Column(name = "start_time")
+    private Date startTime;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "hh:mm:ss")
+    @Column(name = "end_time")
+    private Date endTime;
+    @Column(name = "no_of_participants")
+    private Integer noOfParticipants;
+    @Transient
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
+    private Date day;
+    
 
     public CallLog() {
     }
@@ -66,20 +71,28 @@ public class CallLog implements Serializable {
         this.id = id;
     }
 
-    public Date getCreatedTime() {
-        return createdTime;
+    public Date getStartTime() {
+        return startTime;
     }
 
-    public void setCreatedTime(Date createdTime) {
-        this.createdTime = createdTime;
+    public void setStartTime(Date startTime) {
+        this.startTime = startTime;
     }
 
-    public String getCallerId() {
-        return callerId;
+    public Date getEndTime() {
+        return endTime;
     }
 
-    public void setCallerId(String callerId) {
-        this.callerId = callerId;
+    public void setEndTime(Date endTime) {
+        this.endTime = endTime;
+    }
+
+    public Integer getNoOfParticipants() {
+        return noOfParticipants;
+    }
+
+    public void setNoOfParticipants(Integer noOfParticipants) {
+        this.noOfParticipants = noOfParticipants;
     }
 
     public String getSource() {
@@ -98,13 +111,30 @@ public class CallLog implements Serializable {
         this.destination = destination;
     }
 
-    public Integer getDuration() {
-        return duration;
+    public String getSourceChannelId() {
+        return sourceChannelId;
     }
 
-    public void setDuration(Integer duration) {
-        this.duration = duration;
+    public void setSourceChannelId(String sourceChannelId) {
+        this.sourceChannelId = sourceChannelId;
     }
+
+    public String getDestinationChannelId() {
+        return destinationChannelId;
+    }
+
+    public void setDestinationChannelId(String destinationChannelId) {
+        this.destinationChannelId = destinationChannelId;
+    }
+
+    public Date getDay() {
+        this.day = endTime;
+        return day;
+    }
+
+  
+    
+    
 
     @Override
     public int hashCode() {
@@ -130,5 +160,5 @@ public class CallLog implements Serializable {
     public String toString() {
         return "com.johnson3yo.ariproxy.datao.CallLog[ id=" + id + " ]";
     }
-    
+
 }

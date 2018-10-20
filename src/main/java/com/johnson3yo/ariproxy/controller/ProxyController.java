@@ -6,8 +6,8 @@
 package com.johnson3yo.ariproxy.controller;
 
 import com.johnson3yo.ariproxy.dto.PayloadDTO;
-import ch.loway.oss.ari4java.tools.RestException;
 import com.johnson3yo.ariproxy.datao.CallLog;
+import com.johnson3yo.ariproxy.datao.User;
 import com.johnson3yo.ariproxy.dto.BridgeDTO;
 import com.johnson3yo.ariproxy.dto.BridgeResponse;
 import com.johnson3yo.ariproxy.dto.Channel;
@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -48,37 +49,37 @@ public class ProxyController {
     private ARIService service;
 
     @PostMapping("channels")
-    public ResponseEntity createChannel(@RequestBody PayloadDTO payload) throws RestException {
+    public ResponseEntity createChannel(@RequestBody PayloadDTO payload)  {
         Channel c = (Channel) service.originate(payload);
         return new ResponseEntity<Channel>(c, HttpStatus.OK);
     }
 
     @PostMapping("channels/{channelId}/answer")
-    public ResponseEntity createChannel(@PathVariable("channelId") String channelId) throws RestException {
+    public ResponseEntity createChannel(@PathVariable("channelId") String channelId)  {
         service.answerChannel(channelId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping("channels")
-    public ResponseEntity getChannels() throws RestException {
+    public ResponseEntity getChannels()  {
         List<Channel> c = service.getChannels();
         return new ResponseEntity<List<Channel>>(c, HttpStatus.OK);
     }
 
     @GetMapping("bridges")
-    public ResponseEntity getBridges(@RequestParam(required = false, value = "type") String type) throws RestException {
+    public ResponseEntity getBridges(@RequestParam(required = false, value = "type") String type)  {
         List<BridgeResponse> bridges = service.getBridges(type);
         return new ResponseEntity<List<BridgeResponse>>(bridges, HttpStatus.OK);
     }
 
     @GetMapping("bridges/{id}")
-    public ResponseEntity getBridge(@PathVariable("id") String id) throws RestException {
+    public ResponseEntity getBridge(@PathVariable("id") String id)  {
         BridgeResponse bridge = service.getBridge(id);
         return new ResponseEntity<BridgeResponse>(bridge, HttpStatus.OK);
     }
 
     @PostMapping("bridges")
-    public ResponseEntity saveBridge(@Valid @RequestBody BridgeDTO dto) throws RestException {
+    public ResponseEntity saveBridge(@Valid @RequestBody BridgeDTO dto) {
         service.saveBridge(dto);
         return new ResponseEntity(HttpStatus.CREATED);
     }
@@ -137,7 +138,6 @@ public class ProxyController {
             @RequestParam(value = "text", required = false) String text) {
         PlaybackResponse pb = service.playMediaInBridge(bridgeId, text);
         return new ResponseEntity<PlaybackResponse>(pb, HttpStatus.NO_CONTENT);
-
     }
 
     @PostMapping("calls")
@@ -146,12 +146,37 @@ public class ProxyController {
         return new ResponseEntity<CallLog>(calllog, HttpStatus.CREATED);
     }
 
+    @PutMapping("calls")
+    public ResponseEntity updateCall(@RequestBody CallLog call) {
+        CallLog calllog = service.updateCall(call);
+        return new ResponseEntity<CallLog>(calllog, HttpStatus.OK);
+    }
+
     @GetMapping("calls/{pageNo}")
     public ResponseEntity getCalls(
             @PathVariable("pageNo") Integer pageNo,
             @RequestParam(value = "limit", required = false, defaultValue = "100") Integer limit) {
         List<CallLog> logs = service.getCalls(pageNo, limit);
         return new ResponseEntity<List<CallLog>>(logs, HttpStatus.OK);
+    }
+
+    @PostMapping("users")
+    public ResponseEntity saveUser(@RequestBody User user) {
+        User u = service.saveUser(user);
+        return new ResponseEntity<User>(u, HttpStatus.CREATED);
+    }
+
+    @PutMapping("users/{userId}")
+    public ResponseEntity updateUser(@PathVariable("userId") Integer userId, @RequestBody User user) {
+        user.setId(userId);
+        User u = service.updateUser(user);
+        return new ResponseEntity<User>(u, HttpStatus.OK);
+    }
+
+    @GetMapping("users")
+    public ResponseEntity getUsers() {
+        List<User> users = service.getUsers();
+        return new ResponseEntity<List<User>>(users, HttpStatus.OK);
     }
 
 }

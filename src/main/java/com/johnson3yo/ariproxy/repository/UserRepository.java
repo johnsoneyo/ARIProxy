@@ -5,16 +5,17 @@
  */
 package com.johnson3yo.ariproxy.repository;
 
-import com.johnson3yo.ariproxy.datao.CallLog;
+import com.johnson3yo.ariproxy.datao.User;
 import java.util.List;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.CrudRepository;
 
 /**
  *
  * @author johnson3yo
  */
-public interface CallLogRepository extends CrudRepository<CallLog, Integer> {
-    List<CallLog> findAll(Pageable pageable);
-    CallLog findBySourceChannelId(String sourceChannelId);
+public interface UserRepository extends CrudRepository<User, Integer> {
+
+    List<User> findAll();
+
+    User findUserByUsernameAndPassword(String username, String password);
 }

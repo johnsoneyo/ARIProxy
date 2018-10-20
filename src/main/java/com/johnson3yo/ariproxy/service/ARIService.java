@@ -5,8 +5,9 @@
  */
 package com.johnson3yo.ariproxy.service;
 
-import ch.loway.oss.ari4java.tools.RestException;
 import com.johnson3yo.ariproxy.datao.CallLog;
+import com.johnson3yo.ariproxy.datao.User;
+import com.johnson3yo.ariproxy.datao.UserActivity;
 import com.johnson3yo.ariproxy.dto.BridgeDTO;
 import com.johnson3yo.ariproxy.dto.BridgeEagerLoaded;
 import com.johnson3yo.ariproxy.dto.BridgeResponse;
@@ -22,7 +23,7 @@ import java.util.List;
  */
 public interface ARIService<T> {
 
-    T originate(PayloadDTO p) throws RestException;
+    T originate(PayloadDTO p) ;
 
     List<BridgeResponse> getBridges(String type);
 
@@ -57,5 +58,17 @@ public interface ARIService<T> {
     CallLog saveCall(CallLog call);
 
     List<CallLog> getCalls(Integer pageNo,Integer limit);
+    
+    User saveUser(User user);
+
+    User updateUser(User user);
+
+    List<User> getUsers();
+    
+    User findUserByUsernameAndPassword(String username,String password);
+    
+    UserActivity saveActivity(UserActivity userActivity);
+
+    CallLog updateCall(CallLog call);
 
 }
