@@ -132,21 +132,20 @@ public class DefaultAPIService implements ARIService<Channel> {
                         .collect(Collectors.toList());
             }
 
-           
             for (BridgeResponse br : readValue) {
-                 List<BridgeResponse.Node> nodes = new ArrayList();
-             BridgeResponse.Node node = new BridgeResponse.Node("0803", "participants");
-             nodes.add(node);  
-               
-                 for (String id : br.getChannels()) {
-                      List<BridgeResponse.Node.Children> children = new ArrayList();            
+                List<BridgeResponse.Node> nodes = new ArrayList();
+                BridgeResponse.Node node = new BridgeResponse.Node("0803", "participants");
+                nodes.add(node);
+
+                for (String id : br.getChannels()) {
+                    List<BridgeResponse.Node.Children> children = new ArrayList();
                     BridgeResponse.Node.Children child = new BridgeResponse.Node.Children();
                     child.setId(id);
                     child.setName("demo".concat(id));
                     children.add(child);
-                    node.setChildren(children);                    
-                }                         
-                 br.setNodes(nodes);
+                    node.setChildren(children);
+                }
+                br.setNodes(nodes);
             }
             return readValue;
         } catch (IOException ex) {
@@ -360,7 +359,12 @@ public class DefaultAPIService implements ARIService<Channel> {
     public List<CallLog> getCalls(Integer pageNo, Integer limit) {
         Sort sort = Sort.by(
                 Sort.Order.desc("id"));
-        return callRepo.findAll(PageRequest.of(pageNo, limit, sort));
+        return callRepo.findAll(PageRequest.of(pageNo, limit, sort)).
+                stream().map(e -> {
+            e.setDay(e.getStartTime());
+            return e;
+        }).
+                collect(Collectors.toList());
     }
 
     @Override

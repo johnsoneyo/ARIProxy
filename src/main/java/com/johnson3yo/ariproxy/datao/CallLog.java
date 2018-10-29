@@ -128,13 +128,12 @@ public class CallLog implements Serializable {
     }
 
     public Date getDay() {
-        this.day = endTime;
         return day;
     }
 
-  
-    
-    
+    public void setDay(Date day) {
+        this.day = day;
+    }
 
     @Override
     public int hashCode() {
